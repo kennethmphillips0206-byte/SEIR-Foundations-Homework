@@ -1,1 +1,3 @@
-
+Spotter = Kenneth Phillips
+Teammates = Kenneth Phillips, Dwayne Simone, Ben Tucker
+Days + Times when your team meets = Monday & Wednesday, 7:00–8:30 PM Central Time
