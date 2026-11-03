@@ -44,8 +44,8 @@ Done on Run 6 (i-0684b49eb0e369113) in `/opt/balerica-bank`. Transaction IDs use
 |---|---|---|
 | 0 | Success. For example, `account_lookup 100001` returned Alice Johnson, ACTIVE, balance 5000.00 USD. | cobol_rc0.png |
 | 4 | Account not found. For example, `account_lookup 999999` gave `ERROR=ACCOUNT NOT FOUND`. | cobol_rc4.png |
-| 8 | _[what caused rc 8 — fill in from your screenshot]_ | cobol_rc8.png |
-| 12 | _[what caused rc 12 — fill in from your screenshot]_ | cobol_rc12.png |
+| 8 | Rejected by validation: `payment_post TXN-KP-0002 100001 0.00 USD INV-KP-0002` returned `STATUS=REJECTED` with `REASON=AMOUNT MUST BE GREATER THAN ZERO`. | cobol_rc8.png |
+| 12 | File error: ran `account_lookup 100001` from `~` instead of `/opt/balerica-bank`, so it gave `ERROR=CANNOT OPEN data/accounts.dat` with `FILE-STATUS=35` (file not found), because the program looks for `data/` relative to the current directory. | cobol_rc12.png |
 
 **Ledger decode** (`cat data/payments.dat`): each record is fixed-width with no separators. A line such as
 `TXN0001  100001 0000012550 USD POSTED  INV-1001`
