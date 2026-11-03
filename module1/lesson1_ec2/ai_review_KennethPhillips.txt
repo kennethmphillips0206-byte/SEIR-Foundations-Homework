@@ -1,1 +1,87 @@
+AI Review - Lesson 1 EC2 Runbook
+Name: Kenneth Phillips
+AI used: Claude (Anthropic)
+Conversation link: PASTE_SHARE_LINK_HERE
 
+------------------------------------------------------------
+Q1. Why does the proof line use TZ='America/Chicago', and what
+    does uptime -s prove?
+
+AI's answer (my words):
+uptime -s shows when the instance last booted. If the boot time is
+only minutes before the screenshot, it proves I used a new instance
+and wasn't reusing an old server. TZ='America/Chicago' prints the
+time in Central time instead of the server's default UTC.
+
+How I checked it:
+I compared the boot time in each of my 7 lab run screenshots with
+the time I took the screenshot. Every boot time was only minutes
+earlier, and every run had a different instance ID.
+
+------------------------------------------------------------
+Q2. Why bind uvicorn to 0.0.0.0 instead of 127.0.0.1?
+
+AI's answer (my words):
+127.0.0.1 is a loopback, so the server only accepts connections from
+inside the instance. 0.0.0.0 listens on all the instance's network
+interfaces so outside traffic can get in. The Security Group still
+has to allow port 8000. The bind address and the firewall are two
+separate gates.
+
+How I checked it:
+I read the AWS EC2 docs on IPv4 addresses. They say the public IP is
+mapped to the private IP through NAT and does not show up on the
+instance's network interface. That is where the AI was wrong (see
+below).
+
+------------------------------------------------------------
+Q3. What do COBOL return codes 0, 4, 8, and 12 mean?
+
+AI's answer (my words):
+0 = success (account found or payment POSTED), 4 = warning (account
+not found), 8 = business rejection (not ACTIVE, zero amount, or not
+enough funds), 12 = environment failure (missing file or bad
+arguments). echo $? shows the return code of the last command.
+
+How I checked it:
+I ran echo $? after the COBOL programs myself and got each code. My
+screenshots cobol_rc0, cobol_rc4, cobol_rc8, and cobol_rc12 show all
+four, and they match the return code table in the runbook.
+
+------------------------------------------------------------
+Q4. What does FILE-STATUS=35 mean?
+
+AI's answer (my words):
+It shows up when I'm in the wrong folder. I ran the right program,
+but from the wrong folder, so it couldn't find the file it needed.
+The fix is cd /opt/balerica-bank.
+
+How I checked it:
+It happened to me on Run 7. I ran account_lookup from my home folder
+(~) and it failed. After cd /opt/balerica-bank, the same command
+worked.
+
+------------------------------------------------------------
+Q5. Why terminate the instance instead of stopping it?
+
+AI's answer (my words):
+Stopping pauses the instance. You stop paying for compute, but AWS
+keeps the disk (EBS volume) and keeps billing for that storage.
+Terminating deletes the instance and its root disk, so there are no
+surprise charges and no forgotten server with port 8000 open.
+
+How I checked it:
+I read the AWS EC2 instance lifecycle docs. They say a stopped
+instance isn't charged for usage, but its EBS storage is still
+charged. They also say terminating deletes the root volume by
+default.
+
+------------------------------------------------------------
+Where the AI was wrong:
+In Q2 the AI first said 0.0.0.0 listens on "every network interface,
+including the public IP." That's not right on EC2. The AWS docs say
+the public IP is mapped to the private IP through NAT and doesn't
+appear on the instance's network interface. Traffic to the public IP
+reaches the private IP, and 0.0.0.0 accepts it there. When I asked
+the AI to check its own answers against the AWS docs, it caught
+the mistake and corrected it.
